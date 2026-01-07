@@ -10,8 +10,9 @@ if [ ! -d "$WORDLIST_DIR" ]; then
   exit 1
 fi
 
-# Seleciona um arquivo aleatório
-WORDLIST_FILE=$(find "$WORDLIST_DIR" -type f | shuf -n 1)
+# Seleciona um arquivo aleatório (CSPRNG)
+WORDLIST_FILE=$(find "$WORDLIST_DIR" -type f \
+  | shuf --random-source=/dev/urandom -n 1)
 
 if [ -z "$WORDLIST_FILE" ]; then
   echo "Erro: nenhuma wordlist encontrada."
@@ -26,12 +27,13 @@ if [ "$TOTAL_LINES" -lt "$WORDS_COUNT" ]; then
   exit 1
 fi
 
-# Seleciona 24 palavras únicas
-WORDS=$(grep -v '^\s*$' "$WORDLIST_FILE" \
-  | shuf --random-source=/dev/urandom -n "$WORDS_COUNT")
-
 echo "Wordlist escolhida:"
 echo "  $WORDLIST_FILE"
 echo
 echo "24 palavras geradas:"
-echo "$WORDS"
+echo
+
+# Seleciona e numera as palavras
+grep -v '^\s*$' "$WORDLIST_FILE" \
+  | shuf --random-source=/dev/urandom -n "$WORDS_COUNT" \
+  | nl -w2 -s'. '
