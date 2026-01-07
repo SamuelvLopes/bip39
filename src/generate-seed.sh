@@ -30,10 +30,10 @@ fi
 echo "Wordlist escolhida:"
 echo "  $WORDLIST_FILE"
 echo
-echo "24 palavras geradas:"
+echo "24 palavras geradas (número da linha original):"
 echo
 
-# Seleciona e numera as palavras
-grep -v '^\s*$' "$WORDLIST_FILE" \
-  | shuf --random-source=/dev/urandom -n "$WORDS_COUNT" \
-  | nl -w2 -s'. '
+# Numera o arquivo inteiro, remove linhas vazias, sorteia
+nl -ba "$WORDLIST_FILE" \
+  | grep -vE '^\s*[0-9]+\s*$' \
+  | shuf --random-source=/dev/urandom -n "$WORDS_COUNT"
